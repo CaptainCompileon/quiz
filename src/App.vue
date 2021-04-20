@@ -5,8 +5,8 @@
   <div id="app">
     <Header
     :numCorrect="numCorrect"
+    :numCorrectSession="numCorrectSession"
     :numTotal="numTotal"
-    :getQuestionIndex="getQuestionIndex"
     />
 
     <b-container class="bv-example-row">
@@ -52,28 +52,27 @@ export default {
       questions: [],
       index: 0,
       numCorrect: 0,
+      numCorrectSession: 0,
       numTotal: 0,
       category: 'any',
       difficulty: 'any'
     }
   },
   methods: {
-    getQuestionIndex() {
-      return this.index
-    },
     next() {
       this.index++
     },
     increment(isCorrect) {
       if (isCorrect) {
         this.numCorrect++
+        this.numCorrectSession++
       }
       this.numTotal++
     },
     getApiUrl() {
       let category = (this.category === 'any') ? '' : '&category=' + this.category
       let difficulty = (this.difficulty === 'any') ? '' : '&difficulty=' + this.difficulty
-      
+
       let url = 'https://opentdb.com/api.php?amount=10'
               + category + difficulty + '&type=multiple'
 
@@ -87,8 +86,7 @@ export default {
     },
     fetchNewQuestions: function() {
           this.$nextTick(function () {
-
-              fetch(this.getApiUrl(), { 
+            fetch(this.getApiUrl(), { 
               method: 'get'
               })
                 .then((response) => {
@@ -98,6 +96,9 @@ export default {
                     this.questions = jsonData.results
                   })
           })
+
+          this.index = 0
+          this.numCorrectSession = 0
     }
   } ,
   mounted: function() {
@@ -113,6 +114,6 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  margin-top: 60px;
+  margin-top: 20px;
 }
 </style>

@@ -2,22 +2,31 @@
     <div class="select-arrea-container">
         <b-jumbotron>
             <div>
-                <h4>Category</h4>
-                <b-form-select 
-                v-model="selected1" 
-                :options="optionsCategory"
-                >
-                </b-form-select>
-                <div class="mt-3">Selected: <strong>{{ category }}</strong></div>
+              <b-container>
+                   <b-row class="text-center">
+                        <b-col cols="6">
+                            <h4>Category</h4>
+                            <b-form-select 
+                            v-model="selected1" 
+                            :options="optionsCategory"
+                            >
+                            </b-form-select>
+                            <div class="mt-3">Selected: <strong v-html="selectedCategoryText"></strong></div>
+                        </b-col>
+                        <b-col cols="6">
+                            <h4>Difficulty</h4>
+                            <b-form-select v-model="selected2" :options="optionsDifficulty"></b-form-select>
+                            <div class="mt-3">Selected: <strong v-html="selectedDifficultyText"></strong></div>
+                        </b-col>
+                   </b-row>
+                </b-container> 
             </div>
-            <hr class="my-4">
-            <div sm="3">
-                <h4>Difficulty</h4>
-                <b-form-select v-model="selected2" :options="optionsDifficulty"></b-form-select>
-                <div class="mt-3">Selected: <strong>{{ difficulty }}</strong></div>
-            </div>
-            <b-button variant="primary" @click="updateApiUrl()"             
+          
+            <b-container id="submitButton">
+                <b-button variant="primary" @click="updateApiUrl()"             
              >Submit</b-button>
+            </b-container>
+            
         </b-jumbotron>
     </div>
 </template>
@@ -32,6 +41,8 @@
       return {
         selected1: this.category,
         selected2: this.difficulty,
+        selectedCategoryText: 'Any Category',
+        selectedDifficultyText: 'Any Difficulty',
         optionsCategory: [
             { value: 'any', text: 'Any Category' },
             { value: '9', text: 'General Knowledge' },
@@ -70,7 +81,42 @@
     methods: {
         updateApiUrl: function(){
          this.$emit('updateApiUrlEvent', [this.selected1, this.selected2])
+      },
+        showSelectedText: function() {
+          let categoryText = this.optionsCategory.find(el => el.value === this.category).text
+          this.selectedCategoryText = categoryText
+
+          let difficultyText = this.optionsDifficulty.find(el => el.value === this.difficulty).text
+          this.selectedDifficultyText = difficultyText
+
+        }
+    },
+    watch: {
+      category: {
+        immediate: true,
+        handler() {
+          this.showSelectedText()
+        }
+      },
+      difficulty: {
+        immediate: true,
+        handler() {
+          this.showSelectedText()
+        }
       }
+    },
+    mounted: function() {
+        this.showSelectedText()
     }
   }
 </script>
+
+<style scoped>
+    .jumbotron {
+        padding: 1rem 2rem;
+      }
+
+    #submitButton {
+        padding: 1rem 2rem;
+    }
+</style>

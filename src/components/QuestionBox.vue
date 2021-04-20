@@ -10,11 +10,11 @@
             <hr class="my-4">
             <b-list-group>
                 <b-list-group-item
-                    v-for="(answer, index) in answers" :key="index"
+                    v-for="(answer, index) in shuffledAnswers" :key="index"
                     @click.prevent="selectAnswer(index)"
                     :class="answerClass(index)"
-                >
-                    {{ answer }}
+                    v-html="answer"
+                >    
                 </b-list-group-item>
             </b-list-group>
 
@@ -114,6 +114,7 @@
 <style scoped>
     .list-group {
         margin-bottom: 15px;
+        cursor: pointer;
     }
    
     .list-group-item:hover {
